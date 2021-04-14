@@ -1,0 +1,32 @@
+version: "2.4"
+
+services:
+  selenium-hub:
+    image: selenium/hub:3.141.59-20200326
+    container_name: selenium-hub
+    environment:
+      - GRID_DEBUG=true
+      - GRID_BROWSER_TIMEOUT=10
+      - GRID_TIMEOUT=10
+      - SE_OPTS="-debug"
+    ports:
+      - "4444:4444"
+    healthcheck:
+      test: ["CMD", "/opt/bin/check-grid.sh", "--host", "0.0.0.0", "--port", "4444"]
+    logging: &test_services
+      driver: json-file
+  chrome:
+    image: selenium/node-chrome-debug
+    container_name: chrome
+    volumes:
+      - /dev/shm:/dev/shm
+    ports:
+      - "5900:5900"
+    depends_on:
+      - selenium-hub
+    environment:
+      - CHROME_DRIVER_VERSION=79.0.3945.36
+      - HUB_HOST=selenium-hub
+      - HUB_PORT=4444
+      - GRID_DEBUG=true
+    logging: *test_services
