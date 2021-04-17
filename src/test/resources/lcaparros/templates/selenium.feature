@@ -7,4 +7,4 @@ Feature: Selenium tests
 
     Examples:
       |            url            |            href           |
-      | https://www.selenium.dev/ | https://www.selenium.dev/ |
+      | https://www.selenium.dev/ |   https://selenium.dev/   |
