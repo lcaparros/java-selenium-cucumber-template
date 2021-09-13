@@ -7,11 +7,16 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
 
 public class StepDefinitions {
 
+    private static final String sleniumGridUrl = "http://[::1]:4444";
     private static boolean dunit = false;
 
     private WebDriver driver;
@@ -21,8 +26,6 @@ public class StepDefinitions {
         if(!dunit) {
             Runtime.getRuntime().addShutdownHook(new Thread(this::afterAll));
             dunit = true;
-
-            System.setProperty("webdriver.chrome.driver", "/home/hunter/Descargas/chromedriver_linux64/chromedriver");
         }
     }
 
@@ -38,7 +41,11 @@ public class StepDefinitions {
         options.addArguments("--disable-dev-shm-usage"); // overcome limited resource problems
         options.addArguments("--no-sandbox"); // Bypass OS security model
         options.addArguments("--remote-debugging-port=9222");
-        driver = new ChromeDriver(options);
+        try {
+            driver = new RemoteWebDriver(new URL(sleniumGridUrl), options);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
         driver.get(url);
     }
     @Then("^(.*) is header link$")
